@@ -1,10 +1,12 @@
 plugins {
     kotlin("jvm") version "1.6.0"
+    application
 }
 
 repositories {
     mavenCentral()
 }
+
 
 tasks {
     sourceSets {
@@ -16,4 +18,8 @@ tasks {
     wrapper {
         gradleVersion = "7.3"
     }
+}
+
+application {
+    mainClass.set("Day01Kt") 
 }
