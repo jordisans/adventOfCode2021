@@ -1,6 +1,7 @@
 fun main() {
     val testFileName = "Day00_test"
     val inputFileName = "Day00"
+
     fun part1(input: List<String>): Int {
         return input.size
     }
