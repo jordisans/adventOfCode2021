@@ -1,4 +1,7 @@
 fun main() {
+    val testFileName = "Day01_test"
+    val inputFileName = "Day01"
+
     fun part1(input: List<Int>): Int {
         var measurementIncreases = 0
         input
@@ -25,12 +28,11 @@ fun main() {
         return windowMeasurementIncreases
     }
 
-    // test if implementation meets criteria from the description, like:
-    val testInput = readInput("Day01_test").map { it.toInt() }
+    val testInput = readInput(testFileName).map { it.toInt() }
     check(part1(testInput) == 7)
     check(part2(testInput) == 5)
 
-    val input = readInput("Day01").map { it.toInt() }
+    val input = readInput(inputFileName).map { it.toInt() }
     println(part1(input))
     println(part2(input))
 }
