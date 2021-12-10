@@ -29,8 +29,14 @@ fun main() {
     }
 
     val testInput = readInput(testFileName).map { it.toInt() }
-    check(part1(testInput) == 7)
-    check(part2(testInput) == 5)
+
+    val expectedResultPart1 = 7
+    val actualResultPart1 = part1(testInput)
+    check(actualResultPart1 == expectedResultPart1) { "Part1: Result: $actualResultPart1 is not the expected one: $expectedResultPart1" }
+
+    val expectedResultPart2 = 5
+    val actualResultPart2 = part2(testInput)
+    check(actualResultPart2 == expectedResultPart2) { "Part2: Result: $actualResultPart2 is not the expected one: $expectedResultPart2" }
 
     val input = readInput(inputFileName).map { it.toInt() }
     println(part1(input))
