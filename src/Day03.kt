@@ -1,5 +1,3 @@
-import java.lang.IllegalArgumentException
-
 fun main() {
     val testFileName = "Day03_test"
     val inputFileName = "Day03"
@@ -31,9 +29,9 @@ fun main() {
     }
 
     fun findRating(binaryNumbers: List<String>, bitIndex: Int, criteria: (List<String>, List<String>) -> List<String>): String {
-        if (binaryNumbers.isEmpty()) throw IllegalArgumentException("No binary numbers left to search through")
+        require(binaryNumbers.isNotEmpty()) { "No binary numbers left to search through" }
         if (binaryNumbers.size == 1) return binaryNumbers.first()
-        if (bitIndex >= binaryNumbers.first().length) throw IllegalArgumentException("No more bits to filter by")
+        require(bitIndex < binaryNumbers.first().length) { "No more bits to filter by" }
 
         val (startsWithOne, startsWithZero) = binaryNumbers.partition { binaryNumber -> binaryNumber[bitIndex] == '1' }
         val remainingNumbers = criteria(startsWithOne, startsWithZero)
