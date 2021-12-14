@@ -2,65 +2,48 @@ fun main() {
     val testFileName = "Day04_test"
     val inputFileName = "Day04"
 
-    class Board(values: List<Int>) {
-        val valuesTracker = values.associateWith { false }.toMutableMap()
-
-        fun isNumberPresent(number: Int): Boolean {
-            if (!valuesTracker.containsKey(number)) return false
-            valuesTracker[number] = true
-            return true
-        }
-
-        fun isCompleted(): Boolean {
-            if (checkLines() || checkColumns()) return true
-            return false
-        }
-
-        fun sumUnmarkedNumbers() = valuesTracker.filter { !it.value }.map { it.key }.sum()
-
-        override fun toString(): String {
-            var s = ""
-            for (i in (0..4)) {
-                s += "${valuesTracker.entries.drop(i*5).take(5)}\n"
-            }
-            return s
-        }
-
-        private fun checkLines(): Boolean {
-            for (i in 0..4) {
-                val line = valuesTracker.values.drop(i * 5).take(5).all { it }
-                if (line) return true
-            }
-            return false
-        }
-
-        private fun checkColumns(): Boolean {
-            for (i in 0..4) {
-                val indexes = (i..24 step 5)
-                val column = valuesTracker.values.filterIndexed { index, marked -> index in indexes }.all { it }
-                if (column) return true
-            }
-            return false
-        }
+    fun MutableMap<Int, Boolean>.isNumberPresent(number: Int): Boolean{
+        if (!this.containsKey(number)) return false
+        this[number] = true
+        return true
     }
 
-    fun parseInput(input: List<String>): Pair<List<Int>, MutableList<Board>> {
+    fun MutableMap<Int, Boolean>.checkLines(): Boolean {
+        for (i in 0..4) {
+            val line = this.values.drop(i * 5).take(5).all { it }
+            if (line) return true
+        }
+        return false
+    }
+
+    fun MutableMap<Int, Boolean>.checkColumns(): Boolean {
+        for (i in 0..4) {
+            val indexes = (i..24 step 5)
+            val column = this.values.filterIndexed { index, marked -> index in indexes }.all { it }
+            if (column) return true
+        }
+        return false
+    }
+
+    fun MutableMap<Int, Boolean>.isCompleted(): Boolean {
+        if (this.checkLines() || this.checkColumns()) return true
+        return false
+    }
+
+    fun MutableMap<Int, Boolean>.sumUnmarkedNumbers() = this.filter { !it.value }.map { it.key }.sum()
+
+    fun parseInput(input: List<String>): Pair<List<Int>, MutableList<MutableMap<Int, Boolean>>> {
         val randomNumbers = input.first().split(",").map { it.toInt() }
 
-        val boards = mutableListOf<Board>()
-        val boardValues = mutableListOf<Int>()
+        val boards = mutableListOf<MutableMap<Int, Boolean>>()
 
         for (inputLine in input.drop(1)) {
             if (inputLine.trim().isEmpty()) {
-                if (boardValues.isNotEmpty()) {
-                    boards.add(Board(boardValues))
-                    boardValues.clear()
-                }
+                boards.add(mutableMapOf())
                 continue
             }
-            boardValues.addAll(inputLine.split(" ").filter { it.trim().isNotEmpty() }.map { it.toInt() })
+            boards.last().putAll(inputLine.split(" ").filter { it.trim().isNotEmpty() }.associate { it.toInt() to false })
         }
-        boards.add(Board(boardValues))
         return Pair(randomNumbers, boards)
     }
 
@@ -81,7 +64,7 @@ fun main() {
     fun part2(input: List<String>): Int {
         val (randomNumbers, boards) = parseInput(input)
         randomNumbers.forEach { number ->
-            val boardsToRemove = mutableListOf<Board>()
+            val boardsToRemove = mutableListOf<MutableMap<Int, Boolean>>()
             boards.forEach { board ->
                 if (board.isNumberPresent(number) && board.isCompleted()) {
                     if (boards.size == 1) {
