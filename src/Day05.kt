@@ -6,6 +6,34 @@ fun main() {
 
     data class Coordinate(val x: Int, val y: Int)
 
+    fun MutableMap<Coordinate, Int>.markVerticalLine(coordinate1: Coordinate, coordinate2: Coordinate) {
+        val start = minOf(coordinate1.y, coordinate2.y)
+        val end = maxOf(coordinate1.y, coordinate2.y)
+        for (i in start..end) {
+            val newCoordinate = Coordinate(coordinate1.x, i)
+            this[newCoordinate] = (this[newCoordinate] ?: 0) + 1
+        }
+    }
+
+    fun MutableMap<Coordinate, Int>.markHorizontalLine(coordinate1: Coordinate, coordinate2: Coordinate) {
+        val start = minOf(coordinate1.x, coordinate2.x)
+        val end = maxOf(coordinate1.x, coordinate2.x)
+        for (i in start..end) {
+            val newCoordinate = Coordinate(i, coordinate1.y)
+            this[newCoordinate] = (this[newCoordinate] ?: 0) + 1
+        }
+    }
+
+    fun MutableMap<Coordinate, Int>.markDiagonalLine(coordinate1: Coordinate, coordinate2: Coordinate) {
+        val xRange = if (coordinate2.x - coordinate1.x > 0) coordinate1.x..coordinate2.x else coordinate1.x downTo coordinate2.x
+        val yRange = if (coordinate2.y - coordinate1.y > 0) coordinate1.y..coordinate2.y else coordinate1.y downTo coordinate2.y
+
+        for ((i, j) in xRange.zip(yRange)) {
+            val newCoordinate = Coordinate(i, j)
+            this[newCoordinate] = (this[newCoordinate] ?: 0) + 1
+        }
+    }
+
     fun part1(input: List<String>): Int {
         val hydrothermalVentsMap = mutableMapOf<Coordinate, Int>()
         input.forEach { ventDefinition ->
@@ -14,19 +42,9 @@ fun main() {
             val coord2 = Coordinate(x2.toInt(), y2.toInt())
             if ((coord1.x == coord2.x) xor (coord1.y == coord2.y)) {
                 if (coord1.x == coord2.x) {
-                    val start = minOf(coord1.y, coord2.y)
-                    val end = maxOf(coord1.y, coord2.y)
-                    for (i in start..end) {
-                        val coord = Coordinate(coord1.x, i)
-                        hydrothermalVentsMap[coord] = (hydrothermalVentsMap[coord] ?: 0) + 1
-                    }
+                    hydrothermalVentsMap.markVerticalLine(coord1, coord2)
                 } else {
-                    val start = minOf(coord1.x, coord2.x)
-                    val end = maxOf(coord1.x, coord2.x)
-                    for (i in start..end) {
-                        val coord = Coordinate(i, coord1.y)
-                        hydrothermalVentsMap[coord] = (hydrothermalVentsMap[coord] ?: 0) + 1
-                    }
+                    hydrothermalVentsMap.markHorizontalLine(coord1, coord2)
                 }
             }
         }
@@ -41,29 +59,12 @@ fun main() {
             val coord2 = Coordinate(x2.toInt(), y2.toInt())
             if ((coord1.x == coord2.x) xor (coord1.y == coord2.y)) {
                 if (coord1.x == coord2.x) {
-                    val start = minOf(coord1.y, coord2.y)
-                    val end = maxOf(coord1.y, coord2.y)
-                    for (i in start..end) {
-                        val coord = Coordinate(coord1.x, i)
-                        hydrothermalVentsMap[coord] = (hydrothermalVentsMap[coord] ?: 0) + 1
-                    }
+                    hydrothermalVentsMap.markVerticalLine(coord1, coord2)
                 } else {
-                    val start = minOf(coord1.x, coord2.x)
-                    val end = maxOf(coord1.x, coord2.x)
-                    for (i in start..end) {
-                        val coord = Coordinate(i, coord1.y)
-                        hydrothermalVentsMap[coord] = (hydrothermalVentsMap[coord] ?: 0) + 1
-                    }
+                    hydrothermalVentsMap.markHorizontalLine(coord1, coord2)
                 }
             } else {
-                // Diagonal
-                val xRange = if (coord2.x - coord1.x > 0) coord1.x..coord2.x else coord1.x downTo  coord2.x
-                val yRange = if (coord2.y - coord1.y > 0) coord1.y..coord2.y else coord1.y downTo  coord2.y
-
-                for ((i,j) in xRange.toList().zip(yRange.toList())) {
-                    val coord = Coordinate(i, j)
-                    hydrothermalVentsMap[coord] = (hydrothermalVentsMap[coord] ?: 0) + 1
-                }
+                hydrothermalVentsMap.markDiagonalLine(coord1, coord2)
             }
         }
         return hydrothermalVentsMap.values.filter { it > 1 }.size
