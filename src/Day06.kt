@@ -2,8 +2,8 @@ fun main() {
     val testFileName = "Day06_test"
     val inputFileName = "Day06"
 
-    fun part1(input: String): Int {
-        val lanternFishPopulation = input.split(",").map { it.toInt() }.toMutableList()
+    fun part1(input: List<Int>): Int {
+        val lanternFishPopulation = input.toMutableList()
         var lanternFishBorn = 0
         for (i in 1..80) {
             lanternFishPopulation.forEachIndexed { index, internalTimer ->
@@ -24,8 +24,8 @@ fun main() {
         return lanternFishPopulation.size
     }
 
-    fun part2(input: String): Long {
-        var lanternFishPopulation = input.split(",").map { it.toInt() }
+    fun part2(input: List<Int>): Long {
+        var lanternFishPopulation = input
             .groupBy { it }
             .mapValues { (_, occurrences) -> occurrences.size.toLong() }
 
@@ -34,7 +34,7 @@ fun main() {
         for (i in 1..256) {
             lanternFishPopulation.forEach { (internalTimer, numberOfFish) ->
                 if (internalTimer > 0) {
-                    nextDayPopulation[internalTimer - 1] = (nextDayPopulation[internalTimer-1] ?: 0) + numberOfFish
+                    nextDayPopulation[internalTimer - 1] = (nextDayPopulation[internalTimer - 1] ?: 0) + numberOfFish
                 } else {
                     nextDayPopulation[6] = (nextDayPopulation[6] ?: 0) + numberOfFish
                     nextDayPopulation[8] = numberOfFish
@@ -47,7 +47,7 @@ fun main() {
         return lanternFishPopulation.values.sum()
     }
 
-    val testInput = readInput(testFileName).first()
+    val testInput = readSingleLineOfIntegers(testFileName)
 
     val expectedResultPart1 = 5934
     val actualResultPart1 = part1(testInput)
@@ -57,7 +57,7 @@ fun main() {
     val actualResultPart2 = part2(testInput)
     check(actualResultPart2 == expectedResultPart2) { "Part2: Result: $actualResultPart2 is not the expected one: $expectedResultPart2" }
 
-    val input = readInput(inputFileName).first()
+    val input = readSingleLineOfIntegers(inputFileName)
     println(part1(input))
     println(part2(input))
 }
